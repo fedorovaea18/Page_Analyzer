@@ -14,11 +14,22 @@ import org.slf4j.LoggerFactory;
 import lombok.extern.slf4j.Slf4j;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import io.javalin.rendering.template.JavalinJte;
+import gg.jte.resolve.ResourceCodeResolver;
 
 @Slf4j
 public class App {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+
+    private static TemplateEngine createTemplateEngine() {
+        ClassLoader classLoader = App.class.getClassLoader();
+        ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
+        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
+        return templateEngine;
+    }
 
     private static int getPort() {
         String port = System.getenv().getOrDefault("PORT", "7070");
@@ -31,12 +42,12 @@ public class App {
         return db;
     }
 
-    private static String readResourceFile(String fileName) throws IOException {
+    /*private static String readResourceFile(String fileName) throws IOException {
         var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         }
-    }
+    } */
 
     public static void main(String[] args) throws IOException, SQLException {
         var app = getApp();
@@ -53,8 +64,9 @@ public class App {
 
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
-            config.fileRenderer(new JavalinJte());
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
+
         app.get("/", ctx -> ctx.result("Hello World"));
 
         LOGGER.info("Hello World");

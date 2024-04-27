@@ -1,4 +1,9 @@
-
+@import hexlet.code.dto.BasePage
+@import hexlet.code.util.NamedRoutes
+@param BasePage page
+@template.layout.page(
+    page = page,
+    content = @`
     <section>
 
         <div class="container-fluid bg-dark p-5">
@@ -6,7 +11,7 @@
                 <div class="col-md-10 col-lg-8 mx-auto text-white">
                     <h1 class="display-3 mb-0">Анализатор страниц</h1>
                     <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
-                    <form action="/urls" method="post" class="rss-form text-body">
+                    <form action="${NamedRoutes.urlsPath()}" method="post" class="rss-form text-body">
                         <div class="row">
                             <div class="col">
                                 <div class="form-floating">
@@ -26,3 +31,5 @@
         </div>
 
     </section>
+    `
+)

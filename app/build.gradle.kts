@@ -30,7 +30,9 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.9")
     implementation ("org.slf4j:slf4j-api:2.0.7")
     implementation ("org.slf4j:slf4j-log4j12:2.0.7")
-    implementation ("org.projectlombok:lombok:1.18.26")
+    implementation ("org.projectlombok:lombok:1.18.30")
+    compileOnly ("org.projectlombok:lombok:1.18.30")
+    annotationProcessor ("org.projectlombok:lombok:1.18.30")
 
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("com.h2database:h2:2.2.224")

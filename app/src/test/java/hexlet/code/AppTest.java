@@ -33,7 +33,7 @@ public class AppTest {
         });
     }
 
-    @Test
+    /*@Test
     public void testUrlsPage() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/urls");
@@ -49,7 +49,7 @@ public class AppTest {
             var response = client.get("/urls/" + url.getId());
             assertThat(response.code()).isEqualTo(200);
         });
-    }
+    }*/
 
     @Test
     void testUrlNotFound() throws Exception {

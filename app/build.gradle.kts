@@ -39,6 +39,8 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.7.2")
 
+    implementation("com.konghq:unirest-java:3.14.5")
+
 
 }
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import hexlet.code.controller.UrlsController;
+//import hexlet.code.controller.UrlsCheckController;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -63,8 +64,10 @@ public class App {
 
         app.get(NamedRoutes.rootPath(), UrlsController::root);
         app.post(NamedRoutes.urlsPath(), UrlsController::create);
-        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
         app.get(NamedRoutes.urlsPath(), UrlsController::index);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
+
+       // app.post(NamedRoutes.urlCheckPath("{id}"), UrlsCheckController::check);
 
         return app;
     }

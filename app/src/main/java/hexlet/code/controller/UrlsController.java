@@ -5,11 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
 
 import hexlet.code.dto.BasePage;
 import hexlet.code.dto.urls.UrlPage;

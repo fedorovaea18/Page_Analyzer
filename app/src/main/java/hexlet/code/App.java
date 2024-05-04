@@ -1,7 +1,14 @@
 package hexlet.code;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.stream.Collectors;
 
 import hexlet.code.controller.UrlsController;
 //import hexlet.code.controller.UrlsCheckController;
@@ -19,6 +26,7 @@ import gg.jte.resolve.ResourceCodeResolver;
 @Slf4j
 public class App {
 
+
     private static TemplateEngine createTemplateEngine() {
         ClassLoader classLoader = App.class.getClassLoader();
         ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
@@ -32,17 +40,16 @@ public class App {
     }
 
     static String getDB() {
-        String db = System.getenv().getOrDefault("JDBC_DATABASE_URL",
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL",
                 "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-        return db;
     }
 
-    /*private static String readResourceFile(String fileName) throws IOException {
+    public static String readResourceFile(String fileName) throws IOException {
         var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         }
-    } */
+    }
 
     public static void main(String[] args) throws IOException, SQLException {
         var app = getApp();
@@ -55,6 +62,13 @@ public class App {
         hikariConfig.setJdbcUrl(getDB());
 
         var dataSource = new HikariDataSource(hikariConfig);
+        var sql = readResourceFile("schema.sql");
+
+        log.info(sql);
+        try (var connection = dataSource.getConnection();
+             var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
         BaseRepository.dataSource = dataSource;
 
         var app = Javalin.create(config -> {
@@ -67,7 +81,7 @@ public class App {
         app.get(NamedRoutes.urlsPath(), UrlsController::index);
         app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
 
-       // app.post(NamedRoutes.urlCheckPath("{id}"), UrlsCheckController::check);
+        // app.post(NamedRoutes.urlCheckPath("{id}"), UrlsCheckController::check);
 
         return app;
     }

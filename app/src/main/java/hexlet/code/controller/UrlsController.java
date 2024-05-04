@@ -1,7 +1,6 @@
 package hexlet.code.controller;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -26,43 +25,36 @@ public class UrlsController {
 
     public static void create(Context ctx) throws SQLException {
         var inputUrl = ctx.formParam("url");
-        URL parsedUrl;
+
         try {
-            parsedUrl = new URI(inputUrl).toURL();
-        } catch (URISyntaxException | IllegalArgumentException | NullPointerException | MalformedURLException e) {
+            URL parsedUrl = new URL(inputUrl);
+
+            if (parsedUrl == null || !parsedUrl.toURI().equals(parsedUrl.toURI().normalize())) {
+                throw new MalformedURLException("Invalid URL");
+            }
+
+            String normalizedUrl = parsedUrl.toString().toLowerCase();
+
+            if (UrlRepository.isExist(normalizedUrl)) {
+                ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.sessionAttribute("flashColor", "info");
+                ctx.redirect(NamedRoutes.urlsPath());
+                return;
+            }
+
+            Url newUrl = new Url(normalizedUrl);
+            UrlRepository.save(newUrl);
+
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            ctx.sessionAttribute("flashColor", "success");
+            ctx.redirect(NamedRoutes.urlsPath());
+        } catch (MalformedURLException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flashColor", "danger");
             ctx.redirect(NamedRoutes.rootPath());
-            return;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
-
-        String protocol = parsedUrl.getProtocol();
-        String host = parsedUrl.getHost();
-        String port = parsedUrl.getPort() != -1 ? ":" + parsedUrl.getPort() : "";
-        String normalizedUrl = (protocol + "://" + host + port).toLowerCase();
-
-
-        /*String normalizedUrl = String
-                .format(
-                        "%s://%s%s",
-                        parsedUrl.getProtocol(),
-                        parsedUrl.getHost(),
-                        parsedUrl.getPort() == -1 ? "" : ":" + parsedUrl.getPort()
-                )
-                .toLowerCase();*/
-
-        Url url = UrlRepository.find(Long.valueOf(normalizedUrl)).orElse(null);
-
-        if (url == null) {
-            Url newUrl = new Url(normalizedUrl);
-            UrlRepository.save(newUrl);
-            ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            ctx.sessionAttribute("flashColor", "success");
-        } else {
-            ctx.sessionAttribute("flash", "Страница уже существует");
-            ctx.sessionAttribute("flashColor", "warning");
-        }
-        ctx.redirect(NamedRoutes.urlsPath());
     }
 
     public static void index(Context ctx) throws SQLException {
@@ -83,12 +75,4 @@ public class UrlsController {
         ctx.render("urls/show.jte", Collections.singletonMap("page", page));
     }
 }
-
-    /*private static String buildUrl(URL url) {
-        var protocol = url.getProtocol().isEmpty() ? "null" : url.getProtocol();
-        String host = url.getHost().isEmpty() ? "null" : url.getHost();
-        String port = url.getPort() == -1 ? "" : ":" + url.getPort();
-        return String.format("%s://%s%s", protocol, host, port);
-    }*/
-
 

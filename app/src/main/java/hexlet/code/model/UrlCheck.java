@@ -1,4 +1,4 @@
-package hexlet.code.model;
+/*package hexlet.code.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,4 +24,4 @@ public class UrlCheck {
         this.h1 = h1;
         this.description = description;
     }
-}
+}*/

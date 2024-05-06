@@ -1,12 +1,16 @@
-/*package hexlet.code.model;
+package hexlet.code.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 
 public class UrlCheck {
     private Long id;
@@ -17,11 +21,18 @@ public class UrlCheck {
     private Long urlId;
     private Timestamp createdAt;
 
-    public UrlCheck(long urlId, int statusCode, String title, String h1, String description) {
-        this.urlId = urlId;
+
+    public UrlCheck(int statusCode, Timestamp createdAt) {
+
+        this.statusCode = statusCode;
+        this.createdAt = createdAt;
+    }
+
+    /*public UrlCheck(int statusCode, String title, String h1, String description, Timestamp createdAt) {
         this.statusCode = statusCode;
         this.title = title;
         this.h1 = h1;
         this.description = description;
-    }
-}*/
+        this.createdAt = createdAt;
+    }*/
+}

@@ -4,18 +4,21 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collections;
 
 import hexlet.code.dto.BasePage;
 import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import kong.unirest.Unirest;
 
-public class UrlsController {
+public class UrlController {
     public static void root(Context ctx) {
         var page = new BasePage();
         page.setFlash(ctx.consumeSessionAttribute("flash"));
@@ -74,5 +77,26 @@ public class UrlsController {
 
         ctx.render("urls/show.jte", Collections.singletonMap("page", page));
     }
-}
 
+    public static void check(Context ctx) throws SQLException {
+        var id = ctx.pathParamAsClass("id", Long.class).get();
+        var url = UrlRepository.find(id)
+                .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
+
+        try {
+            var response = Unirest.get(url.getName()).asString();
+            var statusCode = response.getStatus();
+            var createdAt = new Timestamp(System.currentTimeMillis());
+            UrlCheck newCheck = new UrlCheck(statusCode, createdAt);
+            newCheck.setUrlId(id);
+            UrlRepository.saveCheck(newCheck);
+            ctx.sessionAttribute("flash", "Страница успешно проверена");
+            ctx.sessionAttribute("flashColor", "success");
+        } catch (Exception e) {
+            ctx.sessionAttribute("flash", "Ошибка при проверке URL");
+            ctx.sessionAttribute("flashColor", "danger");
+        }
+
+        ctx.redirect(NamedRoutes.urlPath(id));
+    }
+}

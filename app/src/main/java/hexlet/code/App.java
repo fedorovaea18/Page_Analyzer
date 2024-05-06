@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.stream.Collectors;
 
-import hexlet.code.controller.UrlsController;
+import hexlet.code.controller.UrlController;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -72,12 +72,13 @@ public class App {
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        app.get(NamedRoutes.rootPath(), UrlsController::root);
-        app.post(NamedRoutes.urlsPath(), UrlsController::create);
-        app.get(NamedRoutes.urlsPath(), UrlsController::index);
-        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
+        app.get(NamedRoutes.rootPath(), UrlController::root);
+        app.post(NamedRoutes.urlsPath(), UrlController::create);
+        app.get(NamedRoutes.urlsPath(), UrlController::index);
+        app.get(NamedRoutes.urlPath("{id}"), UrlController::show);
 
-        // app.post(NamedRoutes.urlCheckPath("{id}"), UrlsCheckController::check);
+        app.post(NamedRoutes.urlChecksPath("{id}"), UrlController::check);
+        //app.get(NamedRoutes.urlChecksPath("{id}"), UrlController::show);
 
         return app;
     }

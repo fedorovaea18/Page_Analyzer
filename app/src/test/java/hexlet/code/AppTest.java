@@ -3,12 +3,12 @@ package hexlet.code;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-//import java.util.Date;
+import java.util.Date;
 import java.sql.SQLException;
-//import java.sql.Timestamp;
+import java.sql.Timestamp;
 
-//import hexlet.code.model.Url;
-//import hexlet.code.repository.UrlRepository;
+import hexlet.code.model.Url;
+import hexlet.code.repository.UrlRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +41,7 @@ public class AppTest {
         });
     }
 
-    /*@Test
+    @Test
     public void testUrlPage() throws SQLException {
         var url = new Url("https://www.yandex.ru", new Timestamp(new Date().getTime()));
         UrlRepository.save(url);
@@ -49,7 +49,7 @@ public class AppTest {
             var response = client.get("/urls/" + url.getId());
             assertThat(response.code()).isEqualTo(200);
         });
-    }*/
+    }
 
     @Test
     void testUrlNotFound() throws Exception {

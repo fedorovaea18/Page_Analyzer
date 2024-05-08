@@ -82,7 +82,8 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static void saveCheck(UrlCheck newCheck) {
-        var sql = "INSERT INTO url_checks(url_id, status_code, title, h1, description, created_at) VALUES (?, ?, ?, ?, ?, ?)";
+        var sql = "INSERT INTO url_checks(url_id, status_code, title, h1, description, created_at)"
+             + "VALUES (?, ?, ?, ?, ?, ?)";
         var createdAt = new Timestamp(System.currentTimeMillis());
         try (var conn = dataSource.getConnection();
              var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

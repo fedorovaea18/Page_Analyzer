@@ -73,12 +73,12 @@ public class App {
         });
 
         app.get(NamedRoutes.rootPath(), UrlController::root);
-        app.post(NamedRoutes.urlsPath(), UrlController::create);
+        app.post(NamedRoutes.urlsPath(), UrlController::createUrl);
         app.get(NamedRoutes.urlsPath(), UrlController::index);
-        app.get(NamedRoutes.urlPath("{id}"), UrlController::show);
+        app.get(NamedRoutes.urlPath("{id}"), UrlController::showUrls);
 
-        app.post(NamedRoutes.urlChecksPath("{id}"), UrlController::check);
-        //app.get(NamedRoutes.urlChecksPath("{id}"), UrlController::show);
+        app.post(NamedRoutes.urlChecksPath("{id}"), UrlController::checkUrl);
+        app.get(NamedRoutes.urlChecksPath("{id}"), UrlController::showUrls);
 
         return app;
     }

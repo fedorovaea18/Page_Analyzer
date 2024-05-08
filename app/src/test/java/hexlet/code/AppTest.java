@@ -44,7 +44,7 @@ public class AppTest {
     @Test
     public void testUrlPage() throws SQLException {
         var url = new Url("https://www.yandex.ru", new Timestamp(new Date().getTime()));
-        UrlRepository.save(url);
+        UrlRepository.saveUrl(url);
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/urls/" + url.getId());
             assertThat(response.code()).isEqualTo(200);

@@ -6,6 +6,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.List;
 
 import hexlet.code.dto.BasePage;
 import hexlet.code.dto.urls.UrlPage;
@@ -26,14 +27,14 @@ public class UrlController {
         ctx.render("index.jte", Collections.singletonMap("page", page));
     }
 
-    public static void create(Context ctx) throws SQLException {
+    public static void createUrl(Context ctx) throws SQLException {
         var inputUrl = ctx.formParam("url");
 
         try {
             URL parsedUrl = new URL(inputUrl);
 
             if (parsedUrl == null || !parsedUrl.toURI().equals(parsedUrl.toURI().normalize())) {
-                throw new MalformedURLException("Invalid URL");
+                throw new MalformedURLException("Некорректный URL");
             }
 
             String normalizedUrl = parsedUrl.toString().toLowerCase();
@@ -46,7 +47,7 @@ public class UrlController {
             }
 
             Url newUrl = new Url(normalizedUrl);
-            UrlRepository.save(newUrl);
+            UrlRepository.saveUrl(newUrl);
 
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.sessionAttribute("flashColor", "success");
@@ -61,26 +62,30 @@ public class UrlController {
     }
 
     public static void index(Context ctx) throws SQLException {
-        var page = new UrlsPage(UrlRepository.getEntities());
-        page.setFlash(ctx.consumeSessionAttribute("flash"));
-        page.setFlashColor(ctx.consumeSessionAttribute("flashColor"));
+        var page = new UrlsPage(UrlRepository.getUrlEntities());
+            page.setFlash(ctx.consumeSessionAttribute("flash"));
+            page.setFlashColor(ctx.consumeSessionAttribute("flashColor"));
 
-        ctx.render("urls/index.jte", Collections.singletonMap("page", page));
-    }
+            ctx.render("urls/index.jte", Collections.singletonMap("page", page));
+        }
 
-    public static void show(Context ctx) throws SQLException {
+    public static void showUrls(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
-        var url = UrlRepository.find(id)
+        var url = UrlRepository.findUrl(id)
                 .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
 
-        var page = new UrlPage(url);
+        List<UrlCheck> urlChecks = UrlRepository.findUrlChecks(id);
+
+        var page = new UrlPage(url, urlChecks);
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashColor(ctx.consumeSessionAttribute("flashColor"));
 
         ctx.render("urls/show.jte", Collections.singletonMap("page", page));
     }
 
-    public static void check(Context ctx) throws SQLException {
+    public static void checkUrl(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
-        var url = UrlRepository.find(id)
+        var url = UrlRepository.findUrl(id)
                 .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
 
         try {
@@ -96,7 +101,6 @@ public class UrlController {
             ctx.sessionAttribute("flash", "Ошибка при проверке URL");
             ctx.sessionAttribute("flashColor", "danger");
         }
-
         ctx.redirect(NamedRoutes.urlPath(id));
     }
 }

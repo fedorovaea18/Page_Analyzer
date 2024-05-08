@@ -1,5 +1,8 @@
 @import hexlet.code.dto.urls.UrlsPage
 @import hexlet.code.util.NamedRoutes
+@import hexlet.code.model.UrlCheck
+@import hexlet.code.repository.UrlRepository
+@import java.time.format.DateTimeFormatter
 @param UrlsPage page
 
 @template.layout.page(
@@ -16,26 +19,31 @@ content = @`
                 <th class="col-1">Код ответа</th>
             </tr>
             </thead>
-            @if(!page.getUrls().isEmpty())
-                <tbody>
-                @for(var url : page.getUrls())
-                    <tr>
-                        <td>
-                            ${url.getId()}
-                        </td>
-                        <td>
-                            <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
-                    </tr>
-                @endfor
-                </tbody>
-            @endif
+            <tbody>
+            @for(var url : page.getUrls())
+                <tr>
+                    <td>
+                        ${url.getId()}
+                    </td>
+                    <td>
+                        <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
+                    </td>
+                    <td>
+                        ${UrlRepository.findLastUrlCheck(url.getId())
+                                        .map(check -> check.getCreatedAt().toLocalDateTime()
+                                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")))
+                                        .orElse("")}
+                    </td>
+                    <td>
+                        ${UrlRepository.findLastUrlCheck(url.getId())
+                                        .map(UrlCheck::getStatusCode)
+                                        .map(Object::toString)
+                                        .orElse("")}
+                    </td>
+                </tr>
+            @endfor
+            </tbody>
         </table>
     </div>
-
 `
 )

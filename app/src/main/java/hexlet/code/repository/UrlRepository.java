@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class UrlRepository extends BaseRepository {
-    public static void save(Url url) throws SQLException {
+    public static void saveUrl(Url url) {
         var sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
-        var createdAt = new Timestamp(System.currentTimeMillis());
         try (var conn = dataSource.getConnection();
              var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, url.getName());
+            var createdAt = new Timestamp(System.currentTimeMillis());
             preparedStatement.setTimestamp(2, createdAt);
             preparedStatement.executeUpdate();
             var generatedKeys = preparedStatement.getGeneratedKeys();
@@ -27,10 +27,12 @@ public class UrlRepository extends BaseRepository {
             } else {
                 throw new SQLException("Database didn't return id after saving url");
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static Optional<Url> find(Long id) throws SQLException {
+    public static Optional<Url> findUrl(Long id) {
         var sql = "SELECT * FROM urls WHERE id = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
@@ -45,10 +47,12 @@ public class UrlRepository extends BaseRepository {
                 return Optional.of(url);
             }
             return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static List<Url> getEntities() throws SQLException {
+    public static List<Url> getUrlEntities() throws SQLException {
         var sql = "SELECT * FROM urls";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
@@ -77,14 +81,17 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
-    public static void saveCheck(UrlCheck newCheck) throws SQLException {
-        String sql = "INSERT INTO url_checks(url_id, status_code, created_at) VALUES (?, ?, ?)";
+    public static void saveCheck(UrlCheck newCheck) {
+        var sql = "INSERT INTO url_checks(url_id, status_code, title, h1, description, created_at) VALUES (?, ?, ?, ?, ?, ?)";
         var createdAt = new Timestamp(System.currentTimeMillis());
         try (var conn = dataSource.getConnection();
              var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setLong(1, newCheck.getUrlId());
             preparedStatement.setInt(2, newCheck.getStatusCode());
-            preparedStatement.setTimestamp(3, createdAt);
+            preparedStatement.setString(3, newCheck.getTitle());
+            preparedStatement.setString(4, newCheck.getH1());
+            preparedStatement.setString(5, newCheck.getDescription());
+            preparedStatement.setTimestamp(6, createdAt);
             preparedStatement.executeUpdate();
             var generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -93,6 +100,60 @@ public class UrlRepository extends BaseRepository {
             } else {
                 throw new SQLException("DB have not returned an id after saving an entity");
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<UrlCheck> findUrlChecks(Long urlId) {
+        var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC";
+        try (var conn = dataSource.getConnection();
+             var statement = conn.prepareStatement(sql)) {
+            statement.setLong(1, urlId);
+            var resultSet = statement.executeQuery();
+            var result = new ArrayList<UrlCheck>();
+
+            while (resultSet.next()) {
+                var id = resultSet.getLong("id");
+                var statusCode = resultSet.getInt("status_code");
+                var title = resultSet.getString("title");
+                var h1 = resultSet.getString("h1");
+                var description = resultSet.getString("description");
+                var createdAt = resultSet.getTimestamp("created_at");
+                var urlCheck = new UrlCheck(urlId, statusCode, title, h1, description);
+                urlCheck.setId(id);
+                urlCheck.setCreatedAt(createdAt);
+                result.add(urlCheck);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Optional<UrlCheck> findLastUrlCheck(Long urlId) {
+        try {
+            var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";
+            try (var conn = dataSource.getConnection();
+                 var stmt = conn.prepareStatement(sql)) {
+                stmt.setLong(1, urlId);
+                var resultSet = stmt.executeQuery();
+                if (resultSet.next()) {
+                    var id = resultSet.getLong("id");
+                    var statusCode = resultSet.getInt("status_code");
+                    var title = resultSet.getString("title");
+                    var h1 = resultSet.getString("h1");
+                    var description = resultSet.getString("description");
+                    var createdAt = resultSet.getTimestamp("created_at");
+                    var urlCheck = new UrlCheck(urlId, statusCode, title, h1, description);
+                    urlCheck.setId(id);
+                    urlCheck.setCreatedAt(createdAt);
+                    return Optional.of(urlCheck);
+                }
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

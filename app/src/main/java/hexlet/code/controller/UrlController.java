@@ -4,7 +4,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
-import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 
@@ -39,7 +37,8 @@ public class UrlController {
                 throw new MalformedURLException("Некорректный URL");
             }
 
-            String normalizedUrl = parsedUrl.toString().toLowerCase();
+            String normalizedUrl = parsedUrl.getProtocol() + "://" + parsedUrl.getHost()
+                    + (parsedUrl.getPort() != -1 ? ":" + parsedUrl.getPort() : "");
 
             if (UrlRepository.isExist(normalizedUrl)) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
@@ -62,6 +61,7 @@ public class UrlController {
             throw new RuntimeException(e);
         }
     }
+
 
     public static void index(Context ctx) throws SQLException {
         var page = new UrlsPage(UrlRepository.getUrlEntities());
@@ -91,18 +91,16 @@ public class UrlController {
                 .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
 
         try {
-            HttpResponse<String> response = Unirest.get(url.getName()).asString();
+            var response = Unirest.get(url.getName()).asString();
             var statusCode = response.getStatus();
             var document = Jsoup.parse(response.getBody());
             var title = document.title().isEmpty() ? null : document.title();
-            var h1Element = document.selectFirst("h1");
-            var h1 = h1Element == null ? null : h1Element.ownText();
-            var descriptionElement = document.selectFirst("meta[name=description]");
-            var description = descriptionElement == null ? null : descriptionElement.attr("content");
-            //var createdAt = new Timestamp(System.currentTimeMillis());
+            var h1El = document.selectFirst("h1");
+            var h1 = h1El == null ? null : h1El.ownText();
+            var descriptionEl = document.selectFirst("meta[name=description]");
+            var description = descriptionEl == null ? null : descriptionEl.attr("content");
             UrlCheck newCheck = new UrlCheck(statusCode, title, h1, description);
             newCheck.setUrlId(id);
-            //newCheck.setUrlId(createdAt);
             UrlRepository.saveCheck(newCheck);
             ctx.sessionAttribute("flash", "Страница успешно проверена");
             ctx.sessionAttribute("flashColor", "success");

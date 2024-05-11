@@ -16,6 +16,6 @@
 - _Тестирование: JUnit 5, MockWebServer_;
 - _Деплой: https://render.com/ (модель PaaS)_.
 
-### **Демонстрация работы сайта:### 
+### **Демонстрация работы сайта:** 
  
 ### **Деплой на Render.com:**### https://java-project-72-a4vs.onrender.com

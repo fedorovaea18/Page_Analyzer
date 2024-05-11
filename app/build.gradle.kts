@@ -41,6 +41,8 @@ dependencies {
 
     implementation("com.konghq:unirest-java:3.14.5")
 
+    implementation ("org.jsoup:jsoup:1.17.2")
+
 }
 
 tasks.test {

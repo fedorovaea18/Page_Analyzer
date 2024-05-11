@@ -17,7 +17,9 @@ import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import org.jsoup.Jsoup;
 
 public class UrlController {
     public static void root(Context ctx) {
@@ -69,7 +71,7 @@ public class UrlController {
         ctx.render("urls/index.jte", Collections.singletonMap("page", page));
     }
 
-    public static void showUrls(Context ctx) throws SQLException {
+    public static void showUrls(Context ctx) {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.findUrl(id)
                 .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
@@ -83,17 +85,24 @@ public class UrlController {
         ctx.render("urls/show.jte", Collections.singletonMap("page", page));
     }
 
-    public static void checkUrl(Context ctx) throws SQLException {
+    public static void checkUrl(Context ctx) {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.findUrl(id)
                 .orElseThrow(() -> new NotFoundResponse("Entity with id = " + id + " not found"));
 
         try {
-            var response = Unirest.get(url.getName()).asString();
+            HttpResponse<String> response = Unirest.get(url.getName()).asString();
             var statusCode = response.getStatus();
-            var createdAt = new Timestamp(System.currentTimeMillis());
-            UrlCheck newCheck = new UrlCheck(statusCode, createdAt);
+            var document = Jsoup.parse(response.getBody());
+            var title = document.title().isEmpty() ? null : document.title();
+            var h1Element = document.selectFirst("h1");
+            var h1 = h1Element == null ? null : h1Element.ownText();
+            var descriptionElement = document.selectFirst("meta[name=description]");
+            var description = descriptionElement == null ? null : descriptionElement.attr("content");
+            //var createdAt = new Timestamp(System.currentTimeMillis());
+            UrlCheck newCheck = new UrlCheck(statusCode, title, h1, description);
             newCheck.setUrlId(id);
+            //newCheck.setUrlId(createdAt);
             UrlRepository.saveCheck(newCheck);
             ctx.sessionAttribute("flash", "Страница успешно проверена");
             ctx.sessionAttribute("flashColor", "success");

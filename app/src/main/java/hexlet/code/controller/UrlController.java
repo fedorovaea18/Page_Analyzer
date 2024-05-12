@@ -34,8 +34,9 @@ public class UrlController {
             if (parsedUrl == null || !parsedUrl.toURI().equals(parsedUrl.toURI().normalize())) {
                 throw new MalformedURLException("Некорректный URL");
             }
-            String normalizedUrl = parsedUrl.getProtocol() + "://" + parsedUrl.getHost()
-                    + (parsedUrl.getPort() != -1 ? ":" + parsedUrl.getPort() : "");
+
+            String normalizedUrl = buildNormalizedUrl(parsedUrl);
+
             if (UrlRepository.isExist(normalizedUrl)) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
                 ctx.sessionAttribute("flashColor", "info");
@@ -102,5 +103,10 @@ public class UrlController {
             ctx.sessionAttribute("flashColor", "danger");
         }
         ctx.redirect(NamedRoutes.urlPath(id));
+    }
+
+    private static String buildNormalizedUrl(URL parsedUrl) {
+        return parsedUrl.getProtocol() + "://" + parsedUrl.getHost()
+                + (parsedUrl.getPort() != -1 ? ":" + parsedUrl.getPort() : "");
     }
 }

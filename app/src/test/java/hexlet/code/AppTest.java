@@ -1,8 +1,6 @@
 package hexlet.code;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -124,24 +122,4 @@ public class AppTest {
             assertThat(check.getDescription()).isEqualTo("Test description");
         });
     }
-
-    /*@Test
-    public void testExistedUrl() throws SQLException {
-        JavalinTest.test(app, (server, client) -> {
-            var url = "http://www.yandex.ru";
-            var url2 = "http://www.yandex.ru/";
-            var requestBody = "url=" + url;
-            var response = client.post("/urls", requestBody);
-            var requestBody2 = "url=" + url2;
-            var response2 = client.post("/urls", requestBody2);
-            var str = response.body().string();
-
-            assertTrue(str.contains(url));
-            assertFalse(str.contains(url2));
-
-            // Assuming UrlRepository.findUrl returns an Optional
-            assertThat(UrlRepository.findUrl(url)).isPresent();
-            assertThat(UrlRepository.findUrl(url2)).isEmpty();
-        });
-    }*/
 }

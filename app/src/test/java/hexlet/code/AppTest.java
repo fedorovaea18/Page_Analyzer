@@ -57,10 +57,16 @@ public class AppTest {
 
     @Test
     public void testUrlsPage() {
-        JavalinTest.test(app, (server, client) -> {
+        JavalinTest.test(app, ((server, client) -> {
+            var url1 = new Url("http://www.yandex.ru");
+            var url2 = new Url("http://www.mail.ru");
+            UrlRepository.saveUrl(url1);
+            UrlRepository.saveUrl(url2);
             var response = client.get("/urls");
             assertThat(response.code()).isEqualTo(200);
-        });
+            assertThat(response.body().string()).contains("yandex").contains("mail");
+            assertThat(UrlRepository.getUrlEntities().size()).isEqualTo(2);
+        }));
     }
 
     @Test

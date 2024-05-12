@@ -29,27 +29,21 @@ public class UrlController {
 
     public static void createUrl(Context ctx) throws SQLException {
         var inputUrl = ctx.formParam("url");
-
         try {
             URL parsedUrl = new URL(inputUrl);
-
             if (parsedUrl == null || !parsedUrl.toURI().equals(parsedUrl.toURI().normalize())) {
                 throw new MalformedURLException("Некорректный URL");
             }
-
             String normalizedUrl = parsedUrl.getProtocol() + "://" + parsedUrl.getHost()
                     + (parsedUrl.getPort() != -1 ? ":" + parsedUrl.getPort() : "");
-
             if (UrlRepository.isExist(normalizedUrl)) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
                 ctx.sessionAttribute("flashColor", "info");
                 ctx.redirect(NamedRoutes.urlsPath());
                 return;
             }
-
             Url newUrl = new Url(normalizedUrl);
             UrlRepository.saveUrl(newUrl);
-
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.sessionAttribute("flashColor", "success");
             ctx.redirect(NamedRoutes.urlsPath());

@@ -1,6 +1,8 @@
 package hexlet.code;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -57,10 +59,16 @@ public class AppTest {
 
     @Test
     public void testUrlsPage() {
-        JavalinTest.test(app, (server, client) -> {
-            var response = client.get("/urls");
-            assertThat(response.code()).isEqualTo(200);
-        });
+        JavalinTest.test(app, ((server, client) -> {
+            var url1 = new Url("http://www.yandex.ru");
+            var url2 = new Url("http://www.mail.ru");
+            UrlRepository.saveUrl(url1);
+            UrlRepository.saveUrl(url2);
+                var response = client.get("/urls");
+                assertThat(response.code()).isEqualTo(200);
+                assertThat(response.body().string()).contains("yandex").contains("mail");
+                assertThat(UrlRepository.getUrlEntities().size()).isEqualTo(2);
+            }));
     }
 
     @Test
@@ -114,6 +122,25 @@ public class AppTest {
             assertThat(check.getTitle()).isEqualTo("Hello World!");
             assertThat(check.getH1()).isEqualTo("World hello!");
             assertThat(check.getDescription()).isEqualTo("Test description");
+        });
+    }
+
+    @Test
+    public void testExistedUrl() throws SQLException {
+        JavalinTest.test(app, (server, client) -> {
+            var url = "http://www.yandex.ru";
+            var url2 = "http://www.yandex.ru/";
+            var requestBody = "url=" + url;
+            var response = client.post("/urls", requestBody);
+            var requestBody2 = "url=" + url2;
+            var response2 = client.post("/urls", requestBody2);
+            var str = response.body().string();
+
+            assertTrue(str.contains(url));
+            assertFalse(str.contains(url2));
+
+            assertThat(UrlRepository.findUrl(Long.valueOf(url))).isPresent();
+            assertThat(UrlRepository.findUrl(Long.valueOf(url2))).isEmpty();
         });
     }
 }

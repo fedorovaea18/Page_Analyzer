@@ -1,6 +1,5 @@
 package hexlet.code;
 
-import static hexlet.code.App.readResourceFile;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.sql.Timestamp;
 
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlRepository;
-import hexlet.code.util.NamedRoutes;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

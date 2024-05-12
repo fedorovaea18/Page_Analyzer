@@ -62,7 +62,6 @@ public class UrlController {
         }
     }
 
-
     public static void index(Context ctx) throws SQLException {
         var page = new UrlsPage(UrlRepository.getUrlEntities());
         page.setFlash(ctx.consumeSessionAttribute("flash"));

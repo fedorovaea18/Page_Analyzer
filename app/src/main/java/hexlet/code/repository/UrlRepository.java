@@ -142,11 +142,8 @@ public class UrlRepository extends BaseRepository {
                 if (resultSet.next()) {
                     var id = resultSet.getLong("id");
                     var statusCode = resultSet.getInt("status_code");
-                    var title = resultSet.getString("title");
-                    var h1 = resultSet.getString("h1");
-                    var description = resultSet.getString("description");
                     var createdAt = resultSet.getTimestamp("created_at");
-                    var urlCheck = new UrlCheck(statusCode, title, h1, description);
+                    var urlCheck = new UrlCheck(id, statusCode, createdAt);
                     urlCheck.setId(id);
                     urlCheck.setCreatedAt(createdAt);
                     return Optional.of(urlCheck);

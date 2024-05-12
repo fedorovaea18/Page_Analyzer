@@ -20,11 +20,12 @@ public class UrlCheck {
     private Timestamp createdAt;
 
 
-    /*public UrlCheck(int statusCode, Timestamp createdAt) {
-
+    public UrlCheck(long id, int statusCode, Timestamp createdAt) {
+        this.id = id;
         this.statusCode = statusCode;
         this.createdAt = createdAt;
-    }*/
+
+    }
 
     public UrlCheck(int statusCode, String title, String h1, String description) {
         this.statusCode = statusCode;

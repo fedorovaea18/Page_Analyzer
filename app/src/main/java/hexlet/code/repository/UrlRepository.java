@@ -85,7 +85,7 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static void saveCheck(UrlCheck newCheck) {
-        var sql = "INSERT INTO url_checks(url_id, status_code, title, h1, description, created_at)"
+        var sql = "INSERT INTO url_checks(url_id, status_code, title, h1, description, created_at) "
              + "VALUES (?, ?, ?, ?, ?, ?)";
         var createdAt = new Timestamp(System.currentTimeMillis());
         try (var conn = dataSource.getConnection();
@@ -136,8 +136,8 @@ public class UrlRepository extends BaseRepository {
     }
 
     public static Map<Long, UrlCheck> findLastUrlCheck() {
-        var sql = "SELECT DISTINCT ON (url_id) url_id, id, status_code, created_at"
-                + "FROM url_checks"
+        var sql = "SELECT DISTINCT ON (url_id) url_id, id, status_code, created_at "
+                + "FROM url_checks "
                 + "ORDER BY url_id, created_at DESC";
         try (var conn = dataSource.getConnection();
                  var stmt = conn.prepareStatement(sql)) {

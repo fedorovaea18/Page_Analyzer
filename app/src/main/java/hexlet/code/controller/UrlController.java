@@ -109,7 +109,7 @@ public class UrlController {
         ctx.redirect(NamedRoutes.urlPath(id));
     }
 
-    private static String buildNormalizedUrl(URL parsedUrl) {
+    public static String buildNormalizedUrl(URL parsedUrl) {
         return parsedUrl.getProtocol() + "://" + parsedUrl.getHost()
                 + (parsedUrl.getPort() != -1 ? ":" + parsedUrl.getPort() : "");
     }

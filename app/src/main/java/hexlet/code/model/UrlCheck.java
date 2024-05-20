@@ -24,7 +24,6 @@ public class UrlCheck {
         this.id = id;
         this.statusCode = statusCode;
         this.createdAt = createdAt;
-
     }
 
     public UrlCheck(int statusCode, String title, String h1, String description) {

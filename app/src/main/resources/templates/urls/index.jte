@@ -1,7 +1,5 @@
 @import hexlet.code.dto.urls.UrlsPage
 @import hexlet.code.util.NamedRoutes
-@import hexlet.code.model.UrlCheck
-@import hexlet.code.repository.UrlRepository
 @import java.time.format.DateTimeFormatter
 @param UrlsPage page
 
@@ -21,29 +19,22 @@ content = @`
             </thead>
             <tbody>
             @for(var url : page.getUrls())
+                !{var urlCheck = page.getLatestChecks().get(url.getId());}
                 <tr>
-                    <td>
-                        ${url.getId()}
-                    </td>
+                    <td>${url.getId()}</td>
                     <td>
                         <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
                     </td>
                     <td>
-                        ${UrlRepository.findLastUrlCheck(url.getId())
-                                        .map(check -> check.getCreatedAt().toLocalDateTime()
-                                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")))
-                                        .orElse("")}
+                        ${urlCheck == null ? "" : urlCheck.getCreatedAt().toLocalDateTime()
+                                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}
                     </td>
                     <td>
-                        ${UrlRepository.findLastUrlCheck(url.getId())
-                                        .map(UrlCheck::getStatusCode)
-                                        .map(Object::toString)
-                                        .orElse("")}
+                        ${urlCheck == null ? "" : String.valueOf(urlCheck.getStatusCode())}
                     </td>
                 </tr>
             @endfor
             </tbody>
         </table>
-    </div>
 `
 )

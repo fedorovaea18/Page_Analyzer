@@ -58,12 +58,16 @@ public class UrlController {
     }
 
     public static void index(Context ctx) throws SQLException {
-        var page = new UrlsPage(UrlRepository.getUrlEntities());
+        var urls = UrlRepository.getUrlEntities();
+        var urlChecks = UrlRepository.findLastUrlCheck();
+
+        var page = new UrlsPage(urls, urlChecks);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashColor(ctx.consumeSessionAttribute("flashColor"));
 
         ctx.render("urls/index.jte", Collections.singletonMap("page", page));
     }
+
 
     public static void showUrls(Context ctx) {
         var id = ctx.pathParamAsClass("id", Long.class).get();

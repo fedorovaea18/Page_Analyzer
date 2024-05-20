@@ -90,11 +90,12 @@ public class AppTest {
     @Test
     public void testCreateUrl() throws SQLException {
         JavalinTest.test(app, ((server, client) -> {
-            var url = "http://www.yandex.ru";
+            var url = "https://www.yandex.ru";
             var requestBody = "url=" + url;
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string()).contains(url);
+            assertThat(UrlRepository.isExist(url)).isTrue();
         }));
     }
 
@@ -105,7 +106,8 @@ public class AppTest {
             var requestBody = "url=" + url;
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(200);
-            assertThat((response.body()).string().contains(url));
+            assertThat(response.body().string().contains(url));
+            assertThat(UrlRepository.isExist(url)).isFalse();
         });
     }
 

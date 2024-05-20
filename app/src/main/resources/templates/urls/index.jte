@@ -36,5 +36,6 @@ content = @`
             @endfor
             </tbody>
         </table>
+    </div>
 `
 )

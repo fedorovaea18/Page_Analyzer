@@ -11,7 +11,7 @@ This project is a website that analyzes specified pages for SEO suitability. It 
 ### **Технологии, используемые в данном проекте:**
 - _Frontend: Bootstrap_;
 - _Framework: Javalin_;
-- _База данных: H1(при локальной разработке), PostgreSQL(в продакшен среде)_;
+- _Database: H1(for local development), PostgreSQL(for production)_;
 - _Parser: Jsoup_;
 - _Testing: JUnit 5, MockWebServer_;
 - _Deploy: https://render.com/ (model PaaS)_.

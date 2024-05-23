@@ -4,18 +4,18 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a2d797a293d3a5e3f80c/test_coverage)](https://codeclimate.com/github/fedorovaea18/java-project-72/test_coverage)
 [![GitHub Actions Status](https://github.com/fedorovaea18/java-project-72/actions/workflows/github-actions.yml/badge.svg)](https://github.com/fedorovaea18/java-project-72/actions)
 
-# **Анализатор страниц**
+# **Page Analyzer**
 
-Данный проект представляет собой веб-сайт, который анализирует указанные страницы на SEO пригодность. Он реализует базовые принципы построения современных сайтов на MVC-архитектуре: работа с роутингом, обработчиками запросов и шаблонизатором, взаимодействие с базой данных через ORM.
+This project is a website that analyzes specified pages for SEO suitability. It implements basic principles of modern website construction using MVC architecture: working with routing, request handlers, and a templating system, as well as interacting with a database through ORM.
 
 ### **Технологии, используемые в данном проекте:**
-- _Фронтенд(вёрстка): Bootstrap_;
-- _Фреймворк: Javalin_;
+- _Frontend: Bootstrap_;
+- _Framework: Javalin_;
 - _База данных: H1(при локальной разработке), PostgreSQL(в продакшен среде)_;
-- _Парсер: Jsoup_;
-- _Тестирование: JUnit 5, MockWebServer_;
-- _Деплой: https://render.com/ (модель PaaS)_.
+- _Parser: Jsoup_;
+- _Testing: JUnit 5, MockWebServer_;
+- _Deploy: https://render.com/ (model PaaS)_.
 
-### **Демонстрация работы сайта:** 
+### **Demo-video:** 
  
-### **Деплой на Render.com:** https://java-project-72-a4vs.onrender.com
+### **Deploy on Render.com:** https://java-project-72-a4vs.onrender.com

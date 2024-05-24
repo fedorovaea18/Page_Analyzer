@@ -6,7 +6,7 @@
 
 This project is a website that analyzes specified pages for SEO suitability. It implements basic principles of modern website construction using MVC architecture: working with routing, request handlers, and a templating system, as well as interacting with a database through ORM.
 
-### **Технологии, используемые в данном проекте:**
+### **Technology stack:**
 - _Frontend: Bootstrap_;
 - _Framework: Javalin_;
 - _Database: H1(for local development), PostgreSQL(for production)_;

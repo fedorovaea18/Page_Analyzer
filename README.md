@@ -13,7 +13,5 @@ This project is a website that analyzes specified pages for SEO suitability. It 
 - _Parser: Jsoup_;
 - _Testing: JUnit 5, MockWebServer_;
 - _Deploy: https://render.com/ (model PaaS)_.
-
-### **Demo-video:** 
  
 ### **Deploy on Render.com:** https://java-project-72-a4vs.onrender.com

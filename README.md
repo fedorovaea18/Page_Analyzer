@@ -9,7 +9,7 @@ This project is a website that analyzes specified pages for SEO suitability. It 
 ### **Technology stack:**
 - _Frontend: Bootstrap_;
 - _Framework: Javalin_;
-- _Database: H1(for local development), PostgreSQL(for production)_;
+- _Database: H2(for local development), PostgreSQL(for production)_;
 - _Parser: Jsoup_;
 - _Testing: JUnit 5, MockWebServer_;
 - _Deploy: https://render.com/ (model PaaS)_.

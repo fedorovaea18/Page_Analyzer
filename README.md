@@ -6,6 +6,21 @@
 
 This project is a website that analyzes specified pages for SEO suitability. It implements basic principles of modern website construction using MVC architecture: working with routing, request handlers, and a templating system, as well as interacting with a database through ORM.
 
+## Local start
+
+```
+git clone git@github.com:fedorovaea18/Page_Analyzer.git
+cd Page_Analyzer/app
+make build
+make run
+```
+
+## **Run checkstyle and tests**
+```
+make lint
+make test
+```
+
 ### **Technology stack:**
 - _Frontend: Bootstrap_;
 - _Framework: Javalin_;
